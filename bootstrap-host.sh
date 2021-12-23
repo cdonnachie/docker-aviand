@@ -4,7 +4,7 @@
 #
 set -ex
 
-BTC_IMAGE=${BTC_IMAGE:-kylemanna/bitcoind}
+AVN_IMAGE=${AVN_IMAGE:-donnacc/aviand}
 
 distro=$1
 shift
@@ -35,23 +35,23 @@ if [ "$distro" = "trusty" -o "$distro" = "ubuntu:14.04" ]; then
 fi
 
 # Always clean-up, but fail successfully
-docker kill bitcoind-node 2>/dev/null || true
-docker rm bitcoind-node 2>/dev/null || true
-stop docker-bitcoind 2>/dev/null || true
+docker kill aviand-node 2>/dev/null || true
+docker rm aviand-node 2>/dev/null || true
+stop docker-aviand 2>/dev/null || true
 
 # Always pull remote images to avoid caching issues
-if [ -z "${BTC_IMAGE##*/*}" ]; then
-    docker pull $BTC_IMAGE
+if [ -z "${AVN_IMAGE##*/*}" ]; then
+    docker pull $AVN_IMAGE
 fi
 
 # Initialize the data container
-docker volume create --name=bitcoind-data
-docker run -v bitcoind-data:/bitcoin --rm $BTC_IMAGE btc_init
+docker volume create --name=aviand-data
+docker run -v aviand-data:/avian --rm $AVN_IMAGE avn_init
 
-# Start bitcoind via upstart and docker
-curl https://raw.githubusercontent.com/kylemanna/docker-bitcoind/master/upstart.init > /etc/init/docker-bitcoind.conf
-start docker-bitcoind
+# Start aviand via upstart and docker
+curl https://raw.githubusercontent.com/donnacc/docker-aviand/master/upstart.init > /etc/init/docker-aviand.conf
+start docker-aviand
 
 set +ex
-echo "Resulting bitcoin.conf:"
-docker run -v bitcoind-data:/bitcoin --rm $BTC_IMAGE cat /bitcoin/.bitcoin/bitcoin.conf
+echo "Resulting avian.conf:"
+docker run -v aviand-data:/avian --rm $AVN_IMAGE cat /avian/.avian/avian.conf

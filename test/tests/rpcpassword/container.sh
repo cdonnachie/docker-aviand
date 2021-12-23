@@ -2,14 +2,14 @@
 set -e
 
 # Generate the password the first time
-btc_init 2>/dev/null
-eval `grep rpcpassword $HOME/.bitcoin/bitcoin.conf`
+avn_init 2>/dev/null
+eval `grep rpcpassword $HOME/.avian/avian.conf`
 rpcpassword1=$rpcpassword
 
 # Generate the password again
-rm ~/.bitcoin/bitcoin.conf
-btc_init 2>/dev/null
-eval `grep rpcpassword $HOME/.bitcoin/bitcoin.conf`
+rm ~/.avian/avian.conf
+avn_init 2>/dev/null
+eval `grep rpcpassword $HOME/.avian/avian.conf`
 rpcpassword2=$rpcpassword
 
 
