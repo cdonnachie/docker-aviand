@@ -10,13 +10,14 @@ FROM ubuntu:latest as builder
 RUN apt update \
     && apt install -y --no-install-recommends \
         ca-certificates \
-        wget \
+        unzip \
+        curl \
+        gosu \
         gnupg \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ARG VERSION=22.0
-ARG ARCH=x86_64
-ARG BITCOIN_CORE_SIGNATURE=71A3B16735405025D447E8F274810B012346C9A6
+ENV AVIAN_VERSION=v3.1.0
+ENV AVIAN_FILE_VERSION=v3-1-0
 
 # Don't use base image's avian package for a few reasons:
 # 1. Would need to use ppa/latest repo for the latest release.
@@ -24,23 +25,24 @@ ARG BITCOIN_CORE_SIGNATURE=71A3B16735405025D447E8F274810B012346C9A6
 # 3. Verifying pkg signature from main website should inspire confidence and reduce chance of surprises.
 # Instead fetch, verify, and extract to Docker image
 RUN cd /tmp \
-    && gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys ${BITCOIN_CORE_SIGNATURE} \
-    && wget https://aviancore.org/bin/avian-core-${VERSION}/SHA256SUMS.asc \
-        https://aviancore.org/bin/avian-core-${VERSION}/SHA256SUMS \
-        https://aviancore.org/bin/avian-core-${VERSION}/avian-${VERSION}-${ARCH}-linux-gnu.tar.gz \
-    && gpg --verify --status-fd 1 --verify SHA256SUMS.asc SHA256SUMS 2>/dev/null | grep "^\[GNUPG:\] VALIDSIG.*${BITCOIN_CORE_SIGNATURE}\$" \
-    && sha256sum --ignore-missing --check SHA256SUMS \
-    && tar -xzvf avian-${VERSION}-${ARCH}-linux-gnu.tar.gz -C /opt \
-    && ln -sv avian-${VERSION} /opt/avian \
-    && /opt/avian/bin/test_avian --show_progress \
-    && rm -v /opt/avian/bin/test_avian /opt/avian/bin/avian-qt
+    && curl -SLO https://github.com/AvianNetwork/Avian/releases/download/${AVIAN_VERSION}/AVN.Linux.${AVIAN_FILE_VERSION}.zip \
+    && unzip -d /opt *.zip \
+    && mv /opt/AVN\ Linux\ ${AVIAN_FILE_VERSION}/ /opt/avian-${AVIAN_VERSION} \
+    && mkdir /opt/avian-${AVIAN_VERSION}/bin \
+    && mv /opt/avian-${AVIAN_VERSION}/avian-${AVIAN_FILE_VERSION}-cli /opt/avian-${AVIAN_VERSION}/bin/avian-cli \
+    && mv /opt/avian-${AVIAN_VERSION}/avian-${AVIAN_FILE_VERSION}-d /opt/avian-${AVIAN_VERSION}/bin/aviand \
+    && rm /opt/avian-${AVIAN_VERSION}/avian-${AVIAN_FILE_VERSION}-qt \
+    && chmod +x /opt/avian-${AVIAN_VERSION}/bin/* \
+    && ln -sv avian-${AVIAN_VERSION} /opt/avian 
+
+
 
 FROM ubuntu:latest
-LABEL maintainer="Kyle Manna <kyle@donnacc.com>"
+LABEL maintainer="Craig Donnachie <craig.donnachie@gmail.com>"
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 ENV HOME /avian
-EXPOSE 8332 8333
+EXPOSE 7894 7895
 VOLUME ["/avian/.avian"]
 WORKDIR /avian
 

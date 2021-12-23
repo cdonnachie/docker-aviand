@@ -4,7 +4,6 @@ Aviand for Docker
 [![Docker Stars](https://img.shields.io/docker/stars/donnacc/aviand.svg)](https://hub.docker.com/r/donnacc/aviand/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/donnacc/aviand.svg)](https://hub.docker.com/r/donnacc/aviand/)
 [![Build Status](https://travis-ci.org/donnacc/docker-aviand.svg?branch=master)](https://travis-ci.org/donnacc/docker-aviand/)
-[![ImageLayers](https://images.microbadger.com/badges/image/donnacc/aviand.svg)](https://microbadger.com/#/images/donnacc/aviand)
 
 Docker image that runs the Avian aviand node in a container for easy deployment.
 
@@ -34,15 +33,15 @@ Quick Start
 
         docker volume create --name=aviand-data
         docker run -v aviand-data:/avian/.avian --name=aviand-node -d \
-            -p 8333:8333 \
-            -p 127.0.0.1:8332:8332 \
+            -p 7895:7895 \
+            -p 127.0.0.1:7894:7894 \
             donnacc/aviand
 
 2. Verify that the container is running and aviand node is downloading the blockchain
 
         $ docker ps
         CONTAINER ID        IMAGE                         COMMAND             CREATED             STATUS              PORTS                                              NAMES
-        d0e1076b2dca        donnacc/aviand:latest     "avn_oneshot"       2 seconds ago       Up 1 seconds        127.0.0.1:8332->8332/tcp, 0.0.0.0:8333->8333/tcp   aviand-node
+        d0e1076b2dca        donnacc/aviand:latest     "avn_oneshot"       2 seconds ago       Up 1 seconds        127.0.0.1:7894->7894/tcp, 0.0.0.0:7895->7895/tcp   aviand-node
 
 3. You can then access the daemon's output thanks to the [docker logs command]( https://docs.docker.com/reference/commandline/cli/#logs)
 

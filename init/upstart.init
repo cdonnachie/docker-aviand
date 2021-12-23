@@ -11,5 +11,5 @@ pre-start script
   docker pull donnacc/aviand || true
 end script
 script
-  exec docker run --rm -v aviand-data:/avian --name=aviand-node --rm -p 8333:8333 -p 127.0.0.1:8332:8332 donnacc/aviand
+  exec docker run --rm -v aviand-data:/avian --name=aviand-node --rm -p 7895:7895 -p 127.0.0.1:7894:7894 donnacc/aviand
 end script

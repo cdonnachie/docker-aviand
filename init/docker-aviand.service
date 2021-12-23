@@ -1,6 +1,6 @@
 [Unit]
 Description=Aviand Docker Container
-Documentation=https://github.com/donnacc/docker-aviand
+Documentation=https://github.com/cdonnachie/docker-aviand
 Requires=docker.service
 After=docker.service
 
@@ -12,7 +12,7 @@ Restart=always
 Environment="NAME=aviand"
 Environment="DATA_VOL=aviand-data"
 Environment="IMG=donnacc/aviand:dev"
-Environment="PORT=8333:8333/tcp"
+Environment="PORT=7895:7895/tcp"
 
 # To override environment variables, use local configuration directory:
 # /etc/systemd/system/docker-aviand.service/local.conf
